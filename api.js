@@ -11,6 +11,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const connectDB = require("./config/db.js");
 require("dotenv").config();
 const productModel = require("./models/productModel.js");
+const usermodal = require("./models/userModel.js");
 
 // Database connection
 connectDB();

@@ -22,6 +22,8 @@ const router = express.Router();
 // LOGIN
 router.post("/login", limiter, userController.loginController);
 
+router.get("/getusers", userController.getAllUsersController);
+
 // REGISTER
 router.post("/register", limiter, userController.registerController);
 
