@@ -12,6 +12,7 @@ const connectDB = require("./config/db.js");
 require("dotenv").config();
 const productModel = require("./models/productModel.js");
 const usermodal = require("./models/userModel.js");
+const messageModel = require("./models/messageModel.js");
 
 // Database connection
 connectDB();
@@ -183,6 +184,55 @@ app.get("/api/v1/search", async (req, res) => {
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// API routes
+
+// Get messages between two users
+// GET /messages - Get messages between senderId and receiverId
+app.get("/api/v1/messages", async (req, res) => {
+  const { senderId, receiverId } = req.query;
+
+  // Ensure both senderId and receiverId are provided
+  // if (!senderId || !receiverId) {
+  //   return res
+  //     .status(400)
+  //     .json({ error: "senderId and receiverId are required" });
+  // }
+
+  try {
+    const messages = await messageModel
+      .find({
+        $or: [
+          { senderId, receiverId },
+          { senderId: receiverId, receiverId: senderId },
+        ],
+      })
+      .sort({ timestamp: 1 }); // Sort messages by timestamp (ascending)
+
+    res.status(200).json(messages);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res
+      .status(500)
+      .json({ error: "Error fetching messages, please try again later" });
+  }
+});
+
+// Send a message
+app.post("/api/v1/messages", async (req, res) => {
+  const { senderId, receiverId, message } = req.body;
+  try {
+    // Create and save the new message
+    const newMessage = new messageModel({ senderId, receiverId, message });
+    await newMessage.save();
+
+    // Return the saved message as the response
+    res.status(200).json(newMessage);
+  } catch (err) {
+    console.error("Error sending message:", err);
+    res.status(500).send("Error sending message");
   }
 });
 
