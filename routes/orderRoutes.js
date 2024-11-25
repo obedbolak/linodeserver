@@ -27,7 +27,7 @@ router.post("/payments", orderController.paymentsController);
 // Get all orders
 router.get(
   "/admin/get-all-orders",
-  isAuth,
+  // isAuth,
   isAdmin,
   orderController.getAllOrdersController
 );

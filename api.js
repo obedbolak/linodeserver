@@ -190,18 +190,12 @@ app.get("/api/v1/search", async (req, res) => {
 // API routes
 
 // Get messages between two users
-// GET /messages - Get messages between senderId and receiverId
-app.get("/api/v1/messages", async (req, res) => {
-  const { senderId, receiverId } = req.query;
-
-  // Ensure both senderId and receiverId are provided
-  // if (!senderId || !receiverId) {
-  //   return res
-  //     .status(400)
-  //     .json({ error: "senderId and receiverId are required" });
-  // }
-
+// Fetch messages between senderId and receiverId
+app.get("/api/v1/messages/:senderId/:receiverId", async (req, res) => {
   try {
+    const { senderId, receiverId } = req.params;
+
+    // Fetch messages between senderId and receiverId
     const messages = await messageModel
       .find({
         $or: [
@@ -209,23 +203,27 @@ app.get("/api/v1/messages", async (req, res) => {
           { senderId: receiverId, receiverId: senderId },
         ],
       })
-      .sort({ timestamp: 1 }); // Sort messages by timestamp (ascending)
+      .sort({ createdAt: 1 }); // Sorting by creation time in ascending order
 
-    res.status(200).json(messages);
-  } catch (err) {
-    console.error("Error fetching messages:", err);
-    res
-      .status(500)
-      .json({ error: "Error fetching messages, please try again later" });
+    res.json({ messages });
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    res.status(500).json({ error: "Error fetching messages" });
   }
 });
 
 // Send a message
 app.post("/api/v1/messages", async (req, res) => {
-  const { senderId, receiverId, message } = req.body;
+  const { senderId, receiverId, message, productId, productName } = req.body;
   try {
     // Create and save the new message
-    const newMessage = new messageModel({ senderId, receiverId, message });
+    const newMessage = new messageModel({
+      senderId,
+      receiverId,
+      message,
+      productId,
+      productName,
+    });
     await newMessage.save();
 
     // Return the saved message as the response
