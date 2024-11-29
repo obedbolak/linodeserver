@@ -48,6 +48,9 @@ app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/cat", categoryRoutes);
 app.use("/api/v1/order", orderRoutes);
 
+const merchantRoutes = require("./routes/merchantRoutes.js");
+app.use("/api/v1/merchants", merchantRoutes);
+
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from the API! we are getting started" });
 });
