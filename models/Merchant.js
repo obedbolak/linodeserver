@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-const MerchantSchema = new Schema({
+// Merchant Schema
+const merchantSchema = new mongoose.Schema({
+  userId: String,
   storeName: String,
   fullName: String,
   addressLine1: String,
@@ -12,7 +13,10 @@ const MerchantSchema = new Schema({
   country: String,
   phoneNumber: String,
   description: String,
+  businessType: String,
+  website: String,
+
   agreedToTerms: Boolean,
 });
-
-module.exports = mongoose.model("Merchant", MerchantSchema);
+const Merchant = mongoose.model("Merchant", merchantSchema);
+module.exports = Merchant;

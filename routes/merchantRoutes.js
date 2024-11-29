@@ -5,6 +5,7 @@ const Merchant = require("../models/Merchant.js");
 // Register new merchant
 router.post("/register", async (req, res) => {
   const {
+    userId,
     storeName,
     fullName,
     addressLine1,
@@ -13,12 +14,17 @@ router.post("/register", async (req, res) => {
     state,
     zipCode,
     country,
+    website,
+    businessType,
     phoneNumber,
     description,
     agreedToTerms,
   } = req.body;
 
   const newMerchant = new Merchant({
+    userId,
+    website,
+    businessType,
     storeName,
     fullName,
     addressLine1,
@@ -38,46 +44,6 @@ router.post("/register", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Failed to register merchant" });
   }
-});
-
-// Update merchant details
-router.put("/update/:id", async (req, res) => {
-  const merchantId = req.params.id;
-  const updateData = req.body;
-  try {
-    const updatedMerchant = await Merchant.findByIdAndUpdate(
-      merchantId,
-      updateData,
-      { new: true }
-    );
-    if (updatedMerchant) {
-      res.status(200).json({
-        message: "Merchant details updated successfully",
-        updatedMerchant,
-      });
-    } else {
-      res.status(404).json({ error: "Merchant not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to update merchant details" });
-  }
-});
-
-// Delete merchant detail
-
-router.delete("/delete/:id", async (req, res) => {
-  const merchantId = req.params.id;
-  try {
-    const deletedMerchant = await Merchant.findByIdAndDelete(merchantId);
-    if (deletedMerchant) {
-      res.status(200).json({ message: "Merchant deleted successfully" });
-    } else {
-      res.status(404).json({ error: "Merchant not found" });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to delete merchant" });
-  }
-  res.status(500).json({ error: "Failed to delete merchant" });
 });
 
 module.exports = router;

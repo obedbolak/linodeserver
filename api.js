@@ -26,6 +26,9 @@ cloudinary.config({
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(cors());
+
 // Middlewares
 app.use(cors());
 app.use(helmet());
