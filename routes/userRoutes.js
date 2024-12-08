@@ -69,7 +69,7 @@ router.put(
   multipleUpload,
   userController.updateProfilePicController
 );
-
+router.put("/update-profile", userController.updateProfileController);
 // UPDATE PASSWORD
 router.put("/password", isAuth, userController.udpatePasswordController);
 
