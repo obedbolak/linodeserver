@@ -1,13 +1,43 @@
-const mongoose = require("mongoose");
+// models/Message.js
+const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
-  senderId: String,
-  receiverId: String,
-  message: String,
-  productId: { type: mongoose.Schema.Types.ObjectId, required: false }, // Optional
-  productName: { type: String, required: false }, // Optional
-  timestamp: { type: Date, default: Date.now },
+  senderId: {
+    
+    type: String,
+
+    required: true
+  },
+  receiverId: {
+    type: String,
+    required: true
+  },
+  productId: {
+    type: String,
+    required: true
+  },
+  content: {
+    type: String,
+    required: true
+  },
+  senderType: {
+    type: String,
+    enum: ['buyer', 'seller'],
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  isRead: {
+    type: Boolean,
+    default: false
+  },
+conversationId:{
+ type: String,
+    required: true
+}
 });
 
-const messageModel = mongoose.model("Message", messageSchema);
-module.exports = messageModel;
+const Message = mongoose.model('Message', messageSchema);
+module.exports = Message;

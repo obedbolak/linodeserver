@@ -49,7 +49,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+
+ storeName: { type: String },
+    businessAddress: { type: String },
+    businessDescription: { type: String },
+    businessPhone: { type: String },
+
   },
+
   { timestamps: true }
 );
 

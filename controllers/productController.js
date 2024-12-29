@@ -1,3 +1,4 @@
+
 const productModel = require("../models/productModel.js");
 
 const cloudinary = require("cloudinary");
@@ -82,15 +83,15 @@ const getSingleProductController = async (req, res) => {
 };
 
 // CREATE PRODUCT
-const createProductController = async (req, res) => {
+ const createProductController = async (req, res) => {
   try {
-    const { name, description, price, category, stock, uid } = req.body;
+    const { name, description, price, category, stock, sellerId } = req.body;
 
-    // Validation
+    // Validation for required fields (if needed)
     if (!name || !description || !price || !stock) {
       return res.status(400).send({
         success: false,
-        message: "Please provide all fields",
+        message: "Please provide all required fields",
       });
     }
 
@@ -101,40 +102,49 @@ const createProductController = async (req, res) => {
       });
     }
 
-    const imagePromises = req.files.map(async (file) => {
-      const fileData = getDataUri(file); // Assuming getDataUri is a function that converts the file buffer
-      const cdb = await cloudinary.v2.uploader.upload(fileData.content);
-      return {
+    // Initialize an array to hold image data
+    const imagesArray = [];
+
+    // Loop through each file uploaded
+    for (let file of req.files) {
+      const fileUri = getDataUri(file); // Convert file to Data URI
+      const cdb = await cloudinary.v2.uploader.upload(fileUri.content); // Upload to Cloudinary
+
+      const image = {
         public_id: cdb.public_id,
         url: cdb.secure_url,
       };
-    });
 
-    const images = await Promise.all(imagePromises);
+      // Add the image to the array
+      imagesArray.push(image);
+    }
 
-    await productModel.create({
+    // Create the product in the database
+    const newProduct = await productModel.create({
       name,
       description,
       price,
       category,
       stock,
-      uid,
-      images,
+      sellerId,
+      images: imagesArray, // Save the array of image links
     });
 
+    // Return a success response
     res.status(201).send({
       success: true,
       message: "Product created successfully",
+      product: newProduct,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error in creating product",
-      error,
+      message: "Error in creating the product",
+      error: error.message,
     });
   }
-};
+};     	    
 
 // UPDATE PRODUCT
 const updateProductController = async (req, res) => {

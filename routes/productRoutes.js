@@ -10,13 +10,7 @@ const router = express.Router();
 
 // CREATE PRODUCT
 router.post(
-  "/create",
-  isAuth,
-  isAdmin,
-  multipleUpload,
-
-  productController.createProductController
-);
+  "/create", multipleUpload, productController.createProductController);
 
 // GET ALL PRODUCTS
 router.get("/get-all", productController.getAllProductsController);

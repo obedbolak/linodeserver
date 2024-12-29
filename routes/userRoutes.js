@@ -66,7 +66,7 @@ router.get("/admin-users", userController.fetchAdminUsersController);
 router.put(
   "/profile/picture",
   isAuth,
-  multipleUpload,
+  singleUpload,
   userController.updateProfilePicController
 );
 router.put("/update-profile", userController.updateProfileController);

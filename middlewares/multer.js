@@ -1,7 +1,19 @@
-const multer = require("multer");
+// multerConfig.js
 
-const storage = multer.memoryStorage();
+const multer = require('multer');
 
-const multipleUpload = multer({ storage }).array("files", 10); // Adjust 10 to the max number of files you want to accept
+// Set up multer storage configuration
+const storage = multer.memoryStorage(); // Files will be stored in memory
 
-module.exports = { multipleUpload };
+// Set up multer upload middleware for a single file
+const singleUpload = multer({ storage }).single('file');
+
+// Set up multer upload middleware for multiple files (up to 10 files)
+const multipleUpload = multer({ storage }).array('files', 10); // "files" is the form field name, max 10 files
+
+// Export the upload configurations
+module.exports = {
+  singleUpload,
+  multipleUpload
+};
+

@@ -1,37 +1,13 @@
 const userModel = require("../models/userModel.js");
 const cloudinary = require("cloudinary");
 const { getDataUri } = require("../utils/Features.js");
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 
 const registerController = async (req, res) => {
   try {
-    const { name, email, password, address, city, country, phone, answer } =
-      req.body;
-    // validation
-    if (
-      !name ||
-      !email ||
-      !password ||
-      !city ||
-      !address ||
-      !country ||
-      !phone ||
-      !answer
-    ) {
-      return res.status(500).send({
-        success: false,
-        message: "Please Provide All Fields",
-      });
-    }
-    //check exisiting user
-    const exisitingUSer = await userModel.findOne({ email });
-    //validation
-    if (exisitingUSer) {
-      return res.status(500).send({
-        success: false,
-        message: "email already taken",
-      });
-    }
-    const user = await userModel.create({
+    const {
       name,
       email,
       password,
@@ -40,77 +16,126 @@ const registerController = async (req, res) => {
       country,
       phone,
       answer,
+      storeName,
+      businessAddress,
+      businessDescription,
+      businessPhone,
+    } = req.body;
+
+    // Validate input fields
+    if (!name || !email || !password || !phone) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide all required fields.",
+      });
+    }
+
+    // Check if the email or phone is already taken
+    const existingUser = await userModel.findOne({
+      $or: [{ email }, { phone }],
     });
-    res.status(201).send({
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "Email or phone number is already taken.",
+      });
+    }
+
+    // Create a new user
+    const user = new userModel({
+      name,
+      email,
+      password,
+      address,
+      city,
+      country,
+      phone,
+      answer,
+      storeName,
+      businessAddress,
+      businessDescription,
+      businessPhone,
+    });
+
+    // Save the user to the database
+    await user.save();
+
+    res.status(200).json({
       success: true,
-      message: "Registeration Success, please login",
+      message: "Registration successful. Please log in.",
       user,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).send({
+    console.error(error);
+    res.status(500).json({
       success: false,
-      message: "Error In Register API",
+      message: "Error during registration.",
       error,
     });
   }
 };
 
+
+
 //LOGIN
+
 const loginController = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    //validation
-    if (!email || !password) {
-      return res.status(500).send({
-        success: false,
-        message: "Please Add Email OR Password",
-      });
-    }
-    // check user
-    const user = await userModel.findOne({ email });
-    //user valdiation
+    const { loginId, password } = req.body;
+
+    // Find the user by email or phone
+    const user = await userModel.findOne({
+      $or: [{ email: loginId }, { phone: loginId }],
+    });
+
     if (!user) {
-      return res.status(404).send({
+      return res.status(400).send({
         success: false,
-        message: "USer Not Found",
+        message: 'Invalid email/phone or password.',
       });
     }
-    //check pass
-    const isMatch = await user.comparePassword(password);
-    //valdiation pass
+
+    // Compare the entered password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(500).send({
         success: false,
-        message: "invalid credentials",
+        message: 'Invalid credentials.',
       });
     }
-    //teken
+
+    // Generate JWT token
     const token = user.generateToken();
 
+    // Send the token in a cookie and also in the response body
     res
       .status(200)
-      .cookie("token", token, {
-        expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
-        secure: process.env.NODE_ENV === "development" ? true : false,
-        httpOnly: process.env.NODE_ENV === "development" ? true : false,
-        sameSite: process.env.NODE_ENV === "development" ? true : false,
+      .cookie('token', token, {
+        expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // Cookie expires after 15 days
+        secure: process.env.NODE_ENV === 'production', // Set 'secure' to true for production (HTTPS)
+        httpOnly: true, // The cookie is not accessible via JavaScript
+        sameSite: 'strict', // Prevents cross-site request forgery (CSRF) attacks
       })
       .send({
         success: true,
-        message: "Login Successfully",
+        message: 'Login Successful',
         token,
         user,
       });
   } catch (error) {
     console.log(error);
     res.status(500).send({
-      success: "false",
-      message: "Error In Login Api",
-      error,
+      success: false,
+      message: 'Error in Login API',
+      error: error.message,
     });
   }
 };
+
+
+
 
 // GET USER PROFILE
 const getUserProfileController = async (req, res) => {
