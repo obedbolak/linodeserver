@@ -1,6 +1,20 @@
 // controllers/orderController.js
 const Order = require('../models/orderModels.js');
 
+
+
+const getAllOrders = async (req, res) => {
+    try {
+        const orders = await Order.find();  // Retrieves all orders from the database
+        res.status(200).json(orders);  // Sends the list of orders as a JSON response
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching orders', error: err });
+    }
+};
+
+
+
 // Create a new order
 const createOrder = async (req, res) => {
     try {
@@ -64,4 +78,5 @@ module.exports = {
     getOrderByUid,
     updateOrder,
     deleteOrder,
+    getAllOrders,
 };
