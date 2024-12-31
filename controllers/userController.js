@@ -183,32 +183,52 @@ const logoutController = async (req, res) => {
 };
 
 // UPDATE USER PROFILE
+
+
 const updateProfileController = async (req, res) => {
   try {
+    // Get the user based on the logged-in user
     const user = await userModel.findById(req.user._id);
-    const { name, email, address, city, country, phone } = req.body;
-    // validation + Update
-    if (name) user.name = name;
-    if (email) user.email = email;
+
+    // Extract data from the request body (exclude name, email, phone, and role)
+    const {
+      address,
+      city,
+      country,
+      storeName,
+      businessAddress,
+      businessDescription,
+      businessPhone,
+    } = req.body;
+
+    // Validation and Update the user fields, excluding name, email, phone, and role
     if (address) user.address = address;
     if (city) user.city = city;
     if (country) user.country = country;
-    if (phone) user.phone = phone;
-    //save user
+    if (storeName) user.storeName = storeName;
+    if (businessAddress) user.businessAddress = businessAddress;
+    if (businessDescription) user.businessDescription = businessDescription;
+    if (businessPhone) user.businessPhone = businessPhone;
+
+    // Save the updated user data
     await user.save();
+
     res.status(200).send({
       success: true,
-      message: "User Profile Updated",
+      message: "User profile updated successfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error In update profile API",
-      error,
+      message: "Error in updating profile",
+      error: error.message,
     });
   }
 };
+
+
+
 
 // update user passsword
 const udpatePasswordController = async (req, res) => {
