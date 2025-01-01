@@ -128,8 +128,43 @@ const deleteLostItem = async (req, res) => {
   }
 };
 
+
+
+const getAllLostItems = async (req, res) => {
+  try {
+    // Fetch all lost items from the database
+    const items = await lostItem.find();
+
+    // If no items are found, return a message indicating that
+    if (items.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No lost items found",
+      });
+    }
+
+    // If items are found, return them in the response
+    res.status(200).json({
+      success: true,
+      message: "Lost items retrieved successfully",
+      items,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error retrieving lost items",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
 module.exports = {
   createLostItem,
   updateLostItem,
+  getAllLostItems,
   deleteLostItem
 };

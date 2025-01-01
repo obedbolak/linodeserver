@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { singleUpload, multipleUpload } = require('../middlewares/multer.js');
-const { 
+const {
+ getAllLostItems, 
   createLostItem,
   updateLostItem,
   deleteLostItem,
   } = require('../controllers/lostItemController.js');
 
+
+router.get("/lost-items", getAllLostItems);
 
 // Protected routes
 router.post('/item/new', multipleUpload, createLostItem);
