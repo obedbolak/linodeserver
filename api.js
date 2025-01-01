@@ -13,6 +13,8 @@ require("dotenv").config();
 const productModel = require("./models/productModel.js");
 const usermodal = require("./models/userModel.js");
 const messageModel = require("./models/messageModel.js");
+const lostItemModel = require("./models/lostItemModel.js");
+
 
 // Database connection
 connectDB();
@@ -45,7 +47,7 @@ const productRoutes = require("./routes/productRoutes.js");
 const categoryRoutes = require("./routes/categoryRoutes.js");
 const orderRoutes = require("./routes/orderRoutes.js");
 const orderRoutess = require('./routes/orderRoutess.js');
-
+const lostItemRoutes = require('./routes/lostItemRoutes.js');
 
 app.use("/api/v1", testRoutes);
 app.use("/api/v1/user", userRoutes);
@@ -54,6 +56,7 @@ app.use("/api/v1/cat", categoryRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/msg", require('./routes/messageRoutes.js'));
 app.use('/api/v1/orders', orderRoutess);
+app.use('/api/v1/lost', lostItemRoutes);
 
 const merchantRoutes = require("./routes/merchantRoutes.js");
 app.use("/api/v1/merchants", merchantRoutes);

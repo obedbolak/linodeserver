@@ -360,6 +360,37 @@ const fetchAdminUsersController = async (req, res) => {
   }
 };
 
+
+const changeUserRole = async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from route params
+
+    // Ensure the logged-in user can only change their own role
+    if (req.user._id.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to change this user's role" });
+    }
+
+    // Check if the user exists
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Change the user's role to admin (if the current role is user)
+    if (user.role === 'user') {
+      user.role = 'admin';
+      await user.save();
+      return res.status(200).json({ message: "Your role has been changed to admin", user });
+    } else {
+      return res.status(400).json({ message: "You are already an admin" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 const getAllUsersController = async (req, res) => {
   try {
     const users = await userModel.find().select("-password"); // Exclude password
@@ -371,6 +402,7 @@ const getAllUsersController = async (req, res) => {
   }
 };
 module.exports = {
+  changeUserRole,
   getAllUsersController,
   fetchAdminUsersController,
   registerController,

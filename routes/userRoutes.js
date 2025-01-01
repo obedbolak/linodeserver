@@ -76,6 +76,9 @@ router.put("/password", isAuth, userController.udpatePasswordController);
 // PASSWORD RESET
 router.post("/password/reset", userController.passwordResetController);
 
+
+
+router.put("/:userId/role", isAuth, userController.changeUserRole);
 // ====================================================================
 
 module.exports = router;
