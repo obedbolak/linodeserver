@@ -73,10 +73,45 @@ const deleteOrder = async (req, res) => {
     }
 };
 
+
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params; // Get order ID from route parameters
+    const { orderStatus } = req.body; // Get new status from request body
+
+    // Validate that the new status is valid
+    const validStatuses = ["processing", "shipped", "delivered"];
+    if (!validStatuses.includes(orderStatus)) {
+      return res.status(400).json({ message: 'Invalid status value.' });
+    }
+
+    // Find and update the order status
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus },
+      { new: true, runValidators: true } // return updated order and validate
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    return res.status(200).json({
+      message: 'Order status updated successfully',
+      order: order,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
 module.exports = {
     createOrder,
     getOrderByUid,
     updateOrder,
     deleteOrder,
     getAllOrders,
+    updateOrderStatus,
 };
