@@ -87,7 +87,23 @@ getMessagesByUserId: async (req, res) => {
     }
   },
 
+ // Delete all messages in a specific conversation
+  deleteMessages: async (req, res) => {
+    try {
+      const { conversationId } = req.params;
 
+      // Delete messages based on conversationId
+      const result = await Message.deleteMany({ conversationId });
+
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ message: 'No messages found in this conversation to delete' });
+      }
+
+      res.status(200).json({ success: true, message: `${result.deletedCount} messages deleted` });
+    } catch (error) {
+      res.status(500).json({ error: 'Error deleting messages: ' + error.message });
+    }
+  },
 
 
 

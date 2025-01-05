@@ -23,7 +23,7 @@ router.get('/orders/:Uid', orderController.getOrderByUid);
 router.put('/orders/:Uid', orderController.updateOrder);
 
 // Route to delete an order by UID
-router.delete('/orders/:Uid', orderController.deleteOrder);
+router.delete('/orders/:orderId', orderController.deleteOrder);
 
 
 module.exports = router;
