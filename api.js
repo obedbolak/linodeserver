@@ -48,7 +48,7 @@ const categoryRoutes = require("./routes/categoryRoutes.js");
 const orderRoutess = require('./routes/orderRoutess.js');
 const lostItemRoutes = require('./routes/lostItemRoutes.js');
 const serviceRoutes = require('./routes/serviceRoutes.js');
-
+const jobRoutes = require('./routes/jobRoutes');
 
 
 app.use("/api/v1", testRoutes);
@@ -59,7 +59,7 @@ app.use("/api/v1/msg", require('./routes/messageRoutes.js'));
 app.use('/api/v1/orders', orderRoutess);
 app.use('/api/v1/lost', lostItemRoutes);
 app.use('/api/v1/service', serviceRoutes);
-
+app.use('/api/v1/job', jobRoutes);
 
 
 app.get("/api", (req, res) => {
