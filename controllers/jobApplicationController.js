@@ -43,10 +43,10 @@ const createJobApplication = async (req, res) => {
 
     // Create a new job application in the database
     const newJobApplication = await jobApplicationModel.create({
-      applicantName,
+      firstName, middleName, lastName, jobType, briefWhy,
       email,
       phoneNumber,
-      coverLetter,
+      coverLetter:filesArray,
       resume: filesArray, // Save the resume file links
     });
 
