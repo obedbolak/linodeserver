@@ -8,10 +8,10 @@ const jobCreation = require('../models/jobCreationModel.js'); // Assuming the Jo
 const createJob = async (req, res) => {
   try {
     // Extract the fields from the request body
-    const { jobTitle, companyName, jobDescription, location, salary, requirements } = req.body;
+    const { jobTitle, companyName, description, location, salary } = req.body;
 
     // Check if all required fields are provided
-    if (!jobTitle || !companyName || !jobDescription || !location || !salary) {
+    if (!jobTitle || !companyName || !description || !location || !salary) {
       return res.status(400).send({
         success: false,
         message: 'Please provide all required fields',
@@ -48,10 +48,10 @@ const createJob = async (req, res) => {
     const newJobPosting = await jobCreation.create({
       jobTitle,
       companyName,
-      jobDescription,
+      description,
       location,
       salary,
-      requirements,
+    
       jobImage: imagesArray,	 // Optional, can be an array of strings
     });
 

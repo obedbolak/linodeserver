@@ -6,49 +6,45 @@ const { getDataUri } = require("../utils/Features.js");
 const createJobApplication = async (req, res) => {
   try {
     // Extract the fields from the request body
-    const { firstName, middleName, lastName, jobType, briefWhy, email, phoneNumber, coverLetter } = req.body;
+    const { firstName, middleName, lastName, jobType, briefWhy, yearsExperience, gender } = req.body;
 
     // Check if the required fields are provided
-    if (!firstName || !email || !phoneNumber) {
+    if (!firstName ) {
       return res.status(400).send({
         success: false,
         message: 'Please provide all required fields',
       });
     }
 
-    // Ensure a resume is provided
-    if (!req.files || req.files.length === 0) {
+      if (!req.files || req.files.length === 0) {
       return res.status(400).send({
         success: false,
-        message: 'Please provide your resume',
+        message: "Please provide product images",
       });
     }
 
-    // Initialize an array to hold file data
-    const filesArray = [];
+    // Initialize an array to hold image data
+    const imagesArray = [];
 
-    // Loop through each file uploaded (e.g., resume)
+    // Loop through each file uploaded
     for (let file of req.files) {
       const fileUri = getDataUri(file); // Convert file to Data URI
       const cdb = await cloudinary.v2.uploader.upload(fileUri.content); // Upload to Cloudinary
 
-      const fileData = {
+      const image = {
         public_id: cdb.public_id,
         url: cdb.secure_url,
       };
 
-      // Add the uploaded file data to the array
-      filesArray.push(fileData);
+      // Add the image to the array
+      imagesArray.push(image);
     }
 
-    // Create a new job application in the database
+    // Create the product in the database
     const newJobApplication = await jobApplicationModel.create({
-      firstName, middleName, lastName, jobType, briefWhy,
-      email,
-      phoneNumber,
-      coverLetter:filesArray,
-      resume: filesArray, // Save the resume file links
+     firstName, middleName, lastName, jobType, briefWhy, yearsExperience, gender, images: imagesArray, // Save the array of image links
     });
+
 
     // Respond with a success message and the created job application
     res.status(201).send({
@@ -69,3 +65,4 @@ const createJobApplication = async (req, res) => {
 module.exports = {
   createJobApplication,
 };
+

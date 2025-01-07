@@ -24,14 +24,8 @@ const jobListingSchema = new mongoose.Schema({
   },
   jobImage: [
     {
-      public_id: {
-        type: String,
-        required: true,
-      },
-      url: {
-        type: String,
-        required: true,
-      },
+      public_id: String,
+      url: String,
     },
   ],
 });
