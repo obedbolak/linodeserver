@@ -71,6 +71,42 @@ const createJob = async (req, res) => {
   }
 };
 
+
+
+
+// Controller to fetch all job applications
+const getAllJobsCreated = async (req, res) => {
+  try {
+    // Fetch all job applications from the database
+    const jobCreations = await jobCreation.find();
+
+    // Check if there are any job applications
+    if (!jobCreations || jobCreations.length === 0) {
+      return res.status(404).send({
+        success: false,
+        message: 'No job created.',
+      });
+    }
+
+    // Respond with a success message and the list of job applications
+    res.status(200).send({
+      success: true,
+      message: 'Jobs created fetched successfully',
+      jobCreations,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error fetching job applications',
+      error: error.message,
+    });
+  }
+};
+
+
+
 module.exports = {
   createJob,
+  getAllJobsCreated,
 };
