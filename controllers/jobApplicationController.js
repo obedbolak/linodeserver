@@ -6,7 +6,7 @@ const { getDataUri } = require("../utils/Features.js");
 const createJobApplication = async (req, res) => {
   try {
     // Extract the fields from the request body
-    const { firstName, middleName, lastName, jobType, briefWhy, yearsExperience, gender } = req.body;
+    const { firstName, middleName, lastName, jobType, briefWhy, yearsExperience, gender, email, phone } = req.body;
 
     // Check if the required fields are provided
     if (!firstName ) {
@@ -42,7 +42,7 @@ const createJobApplication = async (req, res) => {
 
     // Create the product in the database
     const newJobApplication = await jobApplicationModel.create({
-     firstName, middleName, lastName, jobType, briefWhy, yearsExperience, gender, images: imagesArray, // Save the array of image links
+     firstName, middleName, lastName, jobType, briefWhy, yearsExperience, gender, email, phone, images: imagesArray, // Save the array of image links
     });
 
 

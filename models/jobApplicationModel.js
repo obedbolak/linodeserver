@@ -9,6 +9,9 @@ const jobApplicationSchema = new mongoose.Schema({
   jobType: { type: String, required: true },
   briefWhy: { type: String, required: true },
   yearsExperience: { type: String, required: true },
+  email: { type: String },
+  phone: { type: String, required: true },
+
 images: [
     {
       public_id: String,
