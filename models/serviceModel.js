@@ -37,7 +37,11 @@ const serviceSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-  },
+  }, 
+  isApproved: {
+      type: Boolean,
+      default: false,  // default to false if not explicitly set
+    },
 });
 
 const Service = mongoose.model("Service", serviceSchema);

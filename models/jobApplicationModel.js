@@ -11,6 +11,10 @@ const jobApplicationSchema = new mongoose.Schema({
   yearsExperience: { type: String, required: true },
   email: { type: String },
   phone: { type: String, required: true },
+   isApproved: {
+      type: Boolean,
+      default: false,  // default to false if not explicitly set
+    },
 
 images: [
     {

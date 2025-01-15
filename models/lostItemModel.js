@@ -29,6 +29,10 @@ const lostItemSchema = new mongoose.Schema({
     enum: ["lost", "found"],
     required: true,
   },
+  isApproved: {
+      type: Boolean,
+      default: false,  // default to false if not explicitly set
+    },
   createdAt: {
     type: Date,
     default: Date.now,

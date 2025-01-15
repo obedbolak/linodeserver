@@ -401,7 +401,51 @@ const getAllUsersController = async (req, res) => {
       .json({ message: "Error fetching users", error: error.message });
   }
 };
+
+
+// DELETE USER
+const deleteUserController = async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from route params
+
+    // Ensure the logged-in user can only delete their own account (or an admin can delete any user)
+    if ( req.user.role !== 'administrator') {
+      return res.status(403).json({ message: "You are not authorized to delete this user" });
+    }
+
+    // Find the user to delete
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Delete the user's profile picture from Cloudinary if it exists
+    if (user.profilePic && user.profilePic.public_id) {
+      await cloudinary.v2.uploader.destroy(user.profilePic.public_id);
+    }
+
+    // Delete the user from the database
+    await userModel.findByIdAndDelete(userId);
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error deleting user",
+      error,
+    });
+  }
+};
+
+
+
+
 module.exports = {
+	deleteUserController,
   changeUserRole,
   getAllUsersController,
   fetchAdminUsersController,

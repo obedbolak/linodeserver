@@ -112,7 +112,7 @@ const updateLostItem = async (req, res) => {
 
 const deleteLostItem = async (req, res) => {
   try {
-    const item = await lostItemModel.findById(req.params.id);
+    const item = await lostItem.findById(req.params.id);
     if (!item) {
       return res.status(404).json({ success: false, message: 'Item not found' });
     }

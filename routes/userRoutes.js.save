@@ -1,4 +1,3 @@
-
 const express = require("express");
 const userController = require("../controllers/userController.js");
 const { isAuth } = require("../middlewares/authMiddleware.js");
@@ -75,13 +74,13 @@ router.put("/update-profile", isAuth,  userController.updateProfileController);
 router.put("/password", isAuth, userController.udpatePasswordController);
 
 // PASSWORD RESET
-
 router.post("/password/reset", userController.passwordResetController);
 
-router.delete("/users/:userId", isAuth, userController.deleteUserController);
+router.delete("/
 
 
 router.put("/:userId/role", isAuth, userController.changeUserRole);
 // ====================================================================
 
 module.exports = router;
+

@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
+	isApproved: {
+      type: Boolean,
+      default: false,  // default to false if not explicitly set
+    },
 
  storeName: { type: String },
     businessAddress: { type: String },

@@ -93,6 +93,10 @@ const orderSchema = new mongoose.Schema({
       enum: ["processing", "shipped", "delivered"],
       default: "processing",
     },
+    isApproved: {
+      type: Boolean,
+      default: false,  // default to false if not explicitly set
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Order', orderSchema);

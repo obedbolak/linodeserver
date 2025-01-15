@@ -22,6 +22,10 @@ const jobListingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isApproved: {
+      type: Boolean,
+      default: false,  // default to false if not explicitly set
+    },
   jobImage: [
     {
       public_id: String,
