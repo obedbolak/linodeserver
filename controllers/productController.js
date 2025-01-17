@@ -409,6 +409,51 @@ const productReviewController = async (req, res) => {
   }
 };
 
+const approveProductController = async (req, res) => {
+  try {
+    const { productId } = req.params; // Get productId from URL parameter
+
+    // Step 1: Find the product by ID
+    const product = await productModel.findById(productId);
+
+    // Step 2: Check if the product exists
+    if (!product) {
+      return res.status(404).send({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Step 3: Check if the product is already approved
+    if (product.isApproved === true) {
+      return res.status(400).send({
+        success: false,
+        message: "Product is already approved",
+      });
+    }
+
+    // Step 4: Update the product's approval status
+    product.isApproved = true;
+    await product.save(); // Save the updated product
+
+    // Step 5: Send a success response
+    res.status(200).send({
+      success: true,
+      message: "Product approved successfully",
+      product: product,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error in approving the product",
+      error: error.message,
+    });
+  }
+};
+
+
+
 // ========== EXPORT CONTROLLERS ================
 module.exports = {
   getAllProductsController,
@@ -421,4 +466,5 @@ module.exports = {
   deleteProductController,
   productReviewController,
   deleteSpecificProductImageController,
+  approveProductController,
 };

@@ -4,7 +4,6 @@ const { getDataUri } = require("../utils/Features.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
 const registerController = async (req, res) => {
   try {
     const {
@@ -58,7 +57,12 @@ const registerController = async (req, res) => {
       businessPhone,
     });
 
+
+	
+
+
     // Save the user to the database
+
     await user.save();
 
     res.status(200).json({
@@ -391,6 +395,41 @@ const changeUserRole = async (req, res) => {
 };
 
 
+
+
+// Controller to update the isApproved field
+const updateApprovalStatus = async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from request params
+    const { isApproved } = req.body; // Get isApproved status from request body
+
+    // Validate isApproved value
+    if (typeof isApproved !== 'boolean') {
+      return res.status(400).json({ message: "isApproved must be a boolean" });
+    }
+
+    // Find the user by ID and update the isApproved field
+    const user = await userModel.findByIdAndUpdate(
+      userId, 
+      { isApproved },
+      { new: true } // Return the updated document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      message: `User approval status updated successfully`,
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 const getAllUsersController = async (req, res) => {
   try {
     const users = await userModel.find().select("-password"); // Exclude password
@@ -445,7 +484,7 @@ const deleteUserController = async (req, res) => {
 
 
 module.exports = {
-	deleteUserController,
+  deleteUserController,
   changeUserRole,
   getAllUsersController,
   fetchAdminUsersController,
@@ -457,4 +496,5 @@ module.exports = {
   udpatePasswordController,
   updateProfileController,
   logoutController,
+  updateApprovalStatus,
 };

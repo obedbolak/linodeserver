@@ -70,6 +70,10 @@ router.put(
   singleUpload,
   userController.updateProfilePicController
 );
+
+// Assuming the userId is passed in the URL and isApproved in the body
+router.put('/:userId/approve', userController.updateApprovalStatus);
+
 router.put("/update-profile", isAuth,  userController.updateProfileController);
 // UPDATE PASSWORD
 router.put("/password", isAuth, userController.udpatePasswordController);

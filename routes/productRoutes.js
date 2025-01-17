@@ -25,7 +25,7 @@ router.get("/list/top-products", productController.getTopProductsController);
 router.delete(
   "/:id",
   isAuth,
-  isAdmin,
+  
   productController.deleteProductController
 );
 
@@ -58,6 +58,11 @@ router.put(
 
 // PRODUCT REVIEW
 router.post("/:id/review", isAuth, productController.productReviewController);
+
+
+router.put("/approve/:productId",productController.approveProductController);
+
+
 
 // ====================================================================
 
