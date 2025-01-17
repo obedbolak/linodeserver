@@ -3,6 +3,44 @@ const cloudinary = require("cloudinary");
 const { getDataUri } = require("../utils/Features.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "fuchuobedbol@gmail.com",
+    pass: "dsyb nmjw avyu abti ",
+  },
+});
+
+
+// Generate OTP
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Send OTP email
+const sendOTPEmail = async (email, otp) => {
+  try {
+    await transporter.sendMail({
+      from: "fuchuobedbol@gmail.com",
+      to: email,
+      subject: "Your OTP for Account Verification",
+      html: `
+        <h1>Account Verification</h1>
+        <p>Your OTP for account verification is: <strong>${otp}</strong></p>
+        <p>This OTP will expire in 10 minutes.</p>
+      `,
+    });
+    return true;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return false;
+  }
+};
+
 
 const registerController = async (req, res) => {
   try {
@@ -41,7 +79,13 @@ const registerController = async (req, res) => {
       });
     }
 
-    // Create a new user
+
+
+	 // Generate OTP
+    const otp = generateOTP();
+    const otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
+   
+ // Create a new user
     const user = new userModel({
       name,
       email,
@@ -51,6 +95,8 @@ const registerController = async (req, res) => {
       country,
       phone,
       answer,
+      otp,
+      otpExpiration,
       storeName,
       businessAddress,
       businessDescription,
@@ -64,6 +110,12 @@ const registerController = async (req, res) => {
     // Save the user to the database
 
     await user.save();
+
+	// Send OTP
+    const emailSent = await sendOTPEmail(email, otp);
+    if (!emailSent) {
+      return res.status(500).send({ message: "Error sending OTP email" });
+    }
 
     res.status(200).json({
       success: true,
