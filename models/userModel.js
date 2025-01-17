@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
-
 
 const userSchema = new mongoose.Schema(
   {
@@ -98,59 +96,6 @@ userSchema.methods.generateToken = function () {
 };
 
 
-// Generate OTP
-userSchema.methods.generateOtp = function () {
-  const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-  this.otp = otp;
-  this.otpExpiration = new Date(Date.now() + 5 * 60 * 1000); // OTP expires in 5 minutes
-  return otp;
-};
-
-// Send OTP to email
-userSchema.methods.sendOtpEmail = async function () {
-  const otp = this.generateOtp();
-
-  const transporter = nodemailer.createTransport({
- 	host: "smtp.gmail.com",
-  port: 3000,
-  secure: true,
-  auth: {
-    user: "fuchuobedbol@gmail.com",
-    pass: "dsyb nmjw avyu abti ",
-  },
-  });
-
-  const mailOptions = {
-    from: '"One Market" <Support@onemarket.com>',
-    to: this.email,
-    subject: "OTP Verification for Your Account",
-    html: `
-      <h1>OTP Verification</h1>
-      <p>Your OTP is: <strong>${otp}</strong></p>
-      <p>The OTP will expire in 5 minutes.</p>
-    `,
-  };
-
-  // Send the email
-  await transporter.sendMail(mailOptions);
-};
-
-// Verify OTP
-userSchema.methods.verifyOtp = function (otp) {
-  if (this.otp !== otp) {
-    return { isValid: false, message: "Invalid OTP" };
-  }
-
-  if (new Date() > new Date(this.otpExpiration)) {
-    return { isValid: false, message: "OTP has expired" };
-  }
-
-  // Clear OTP after successful verification
-  this.otp = null;
-  this.otpExpiration = null;
-  this.isVerified = true; // Mark the user as verified
-  return { isValid: true, message: "OTP verified successfully" };
-};
 
 
 
