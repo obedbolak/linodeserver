@@ -42,6 +42,10 @@ const serviceSchema = new mongoose.Schema({
       type: Boolean,
       default: false,  // default to false if not explicitly set
     },
+   locationCity:{
+   type:String,
+   required: true,
+   }
 });
 
 const Service = mongoose.model("Service", serviceSchema);

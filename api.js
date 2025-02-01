@@ -14,7 +14,7 @@ const productModel = require("./models/productModel.js");
 const usermodal = require("./models/userModel.js");
 const messageModel = require("./models/messageModel.js");
 const lostItemModel = require("./models/lostItemModel.js");
-const nodemailer = require('nodemailer');
+
 
 // Database connection
 connectDB();
@@ -49,7 +49,7 @@ const orderRoutess = require('./routes/orderRoutess.js');
 const lostItemRoutes = require('./routes/lostItemRoutes.js');
 const serviceRoutes = require('./routes/serviceRoutes.js');
 const jobRoutes = require('./routes/jobRoutes');
-
+const busRoutes = require('./routes/busBookingRoutes.js');
 
 app.use("/api/v1", testRoutes);
 app.use("/api/v1/user", userRoutes);
@@ -60,45 +60,7 @@ app.use('/api/v1/orders', orderRoutess);
 app.use('/api/v1/lost', lostItemRoutes);
 app.use('/api/v1/service', serviceRoutes);
 app.use('/api/v1/job', jobRoutes);
-
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'fuchuobedbol@gmail.com', // replace with your email
-    pass: 'dsyb nmjw avyu abti ',    // replace with your email password or app password if using 2FA
-  }
-});
-
-// POST route for sending emails
-app.post('/send-email', (req, res) => {
-  const { to, subject, text } = req.body;
-
-  // Basic validation of input data
-  if (!to || !subject || !text) {
-    return res.status(400).send('Error: Missing required fields (to, subject, text)');
-  }
-
-  const mailOptions = {
-    from: 'fuchuobedbol@gmail.com',  // replace with your email
-    to,                           // recipient email address
-    subject,                      // subject from the request body
-    text                          // email content from the request body
-  };
-
-  // Send the email
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).send('Error: ' + error.toString());
-    }
-    res.status(200).send('Email sent: ' + info.response);
-  });
-});
-
-
-
-
-
+app.use('/api/v1/bus', busRoutes);
 
 app.post("/api/v1/payments", async (req, res) => {
   try {

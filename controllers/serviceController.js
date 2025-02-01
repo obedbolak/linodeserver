@@ -5,7 +5,7 @@ const { getDataUri } = require("../utils/Features.js");
 // Controller to create a new service
 const createService = async (req, res) => {
   try {
-    const { name, description, location, contactInfo, email, status } = req.body;
+    const { name, description, location, contactInfo, email, status, locationCity } = req.body;
 
     // Validate required fields
     if (!name || !description || !location || !contactInfo || !email) {
@@ -47,6 +47,7 @@ const createService = async (req, res) => {
       location,
       contactInfo,
       email,
+      locationCity,
       status: status || "active", // Default to "active" if no status is provided
       images: imagesArray, // Save the image data
     });
