@@ -24,6 +24,19 @@ router.put('/orders/:Uid', orderController.updateOrder);
 
 // Route to delete an order by UID
 router.delete('/orders/:orderId', orderController.deleteOrder);
+// Route to update the payment status
+router.put('/update-payment-status/:orderId', async (req, res) => {
+  const { orderId } = req.params;
 
+  try {
+    const updatedOrder = await orderController.updatePaymentStatus(orderId);
+    res.status(200).json({
+      message: 'Payment status updated successfully',
+      updatedOrder
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

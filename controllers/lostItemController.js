@@ -55,14 +55,14 @@ try {
     // Return a success response
     res.status(201).send({
       success: true,
-      message: "Product created successfully",
+      message: "item  created successfully",
       product: newProduct,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Error in creating the product",
+      message: "Error in creating the item",
       error: error.message,
     });
   }
@@ -159,6 +159,75 @@ const getAllLostItems = async (req, res) => {
   }
 };
 
+const updateItemStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    // Validate status
+    if (!['lost', 'found'].includes(status)) {
+      return res.status(400).json({ 
+        message: 'Invalid status. Must be "lost" or "found"' 
+      });
+    }
+
+    const updatedItem = await lostItem.findByIdAndUpdate(
+      id, 
+      { status }, 
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+
+    res.status(200).json({
+      message: 'Item status updated successfully',
+      item: updatedItem
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error updating item status', 
+      error: error.message 
+    });
+  }
+};
+
+// Update item approval status
+const updateApprovalStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isApproved } = req.body;
+
+    // Validate isApproved is a boolean
+    if (typeof isApproved !== 'boolean') {
+      return res.status(400).json({ 
+        message: 'Invalid approval status. Must be a boolean' 
+      });
+    }
+
+    const updatedItem = await lostItem.findByIdAndUpdate(
+      id, 
+      { isApproved }, 
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+
+    res.status(200).json({
+      message: 'Item approval status updated successfully',
+      item: updatedItem
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error updating approval status', 
+      error: error.message 
+    });
+  }
+};
+
 
 
 
@@ -166,5 +235,7 @@ module.exports = {
   createLostItem,
   updateLostItem,
   getAllLostItems,
-  deleteLostItem
+  deleteLostItem,
+  updateItemStatus,
+  updateApprovalStatus,
 };

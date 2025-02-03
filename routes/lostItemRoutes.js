@@ -6,6 +6,8 @@ const {
   createLostItem,
   updateLostItem,
   deleteLostItem,
+  updateItemStatus,
+updateApprovalStatus,
   } = require('../controllers/lostItemController.js');
 
 
@@ -15,5 +17,13 @@ router.get("/lost-items", getAllLostItems);
 router.post('/item/new', multipleUpload, createLostItem);
 router.put('/item/:id', multipleUpload, updateLostItem);
 router.delete('/item/:id', deleteLostItem);
+// Route to update item status
+router.patch('/:id/status', updateItemStatus);
+
+// Route to update approval status
+router.patch('/:id/approve', updateApprovalStatus);
+
+
+
 
 module.exports = router;

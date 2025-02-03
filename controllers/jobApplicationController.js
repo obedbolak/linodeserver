@@ -93,8 +93,76 @@ const getAllJobApplications = async (req, res) => {
   }
 };
 
+
+
+const  appupdateApprovalStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isApproved } = req.body;
+
+    // Validate isApproved is a boolean
+    if (typeof isApproved !== 'boolean') {
+      return res.status(400).json({ 
+        message: 'Invalid approval status. Must be a boolean' 
+      });
+    }
+
+    const updatedItem = await jobApplicationModel.findByIdAndUpdate(
+      id, 
+      { isApproved }, 
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+
+    res.status(200).json({
+      message: 'Item approval status updated successfully',
+      item: updatedItem
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error updating approval status', 
+      error: error.message 
+    });
+  }
+};
+
+
+const appdeleteJobListing = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deletedJob = await jobApplicationModel.findByIdAndDelete(id);
+
+    if (!deletedJob) {
+      return res.status(404).json({
+        success: false,
+        message: 'Job listing not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Job listing deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+
+
+
+
 module.exports = {
   createJobApplication,
   getAllJobApplications,
+ appupdateApprovalStatus,
+ appdeleteJobListing,
 };
 

@@ -111,6 +111,28 @@ const updateOrderStatus = async (req, res) => {
 };
 
 
+// Assuming this is in your controller or route handler
+const updatePaymentStatus = async (orderId) => {
+  try {
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      {
+        'paymentInfo.status': 'paid'
+      },
+      { new: true } // This option returns the updated document
+    );
+
+    if (!updatedOrder) {
+      throw new Error('Order not found');
+    }
+
+    return updatedOrder;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 module.exports = {
     createOrder,
     getOrderByUid,
@@ -118,4 +140,5 @@ module.exports = {
     deleteOrder,
     getAllOrders,
     updateOrderStatus,
+    updatePaymentStatus,
 };
