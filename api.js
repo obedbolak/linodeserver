@@ -50,6 +50,7 @@ const lostItemRoutes = require('./routes/lostItemRoutes.js');
 const serviceRoutes = require('./routes/serviceRoutes.js');
 const jobRoutes = require('./routes/jobRoutes');
 const busRoutes = require('./routes/busBookingRoutes.js');
+const propertyRoutes = require('./routes/propertyRoutes.js');
 
 app.use("/api/v1", testRoutes);
 app.use("/api/v1/user", userRoutes);
@@ -61,7 +62,7 @@ app.use('/api/v1/lost', lostItemRoutes);
 app.use('/api/v1/service', serviceRoutes);
 app.use('/api/v1/job', jobRoutes);
 app.use('/api/v1/bus', busRoutes);
-
+app.use('/api/v1/prop', propertyRoutes);
 app.post("/api/v1/payments", async (req, res) => {
   try {
     const {

@@ -114,7 +114,7 @@ const getAllServices = async (req, res) => {
     res.status(200).send({
       success: true,
       services: services,
-    });
+   });
   } catch (error) {
     console.log(error);
     res.status(500).send({
@@ -126,4 +126,81 @@ const getAllServices = async (req, res) => {
 };
 
 
-module.exports = { createService, deleteService, getAllServices };
+
+// Toggle service status between active and inactive
+const toggleServiceStatus = async (req, res) => {
+  try {
+    const { serviceId } = req.params;
+
+    const service = await Service.findById(serviceId);
+    
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: 'Service not found'
+      });
+    }
+
+    // Toggle the status
+    service.status = service.status === 'active' ? 'inactive' : 'active';
+    
+    await service.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Service status updated to ${service.status}`,
+      service
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating service status',
+      error: error.message
+    });
+  }
+};
+
+// Update approval status
+const updateApprovalStatus = async (req, res) => {
+  try {
+    const { serviceId } = req.params;
+    const { isApproved } = req.body;
+
+    if (typeof isApproved !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: 'isApproved must be a boolean value'
+      });
+    }
+
+    const service = await Service.findByIdAndUpdate(
+      serviceId,
+      { isApproved },
+      { new: true, runValidators: true }
+    );
+
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: 'Service not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Service approval status updated to ${isApproved}`,
+      service
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating approval status',
+      error: error.message
+    });
+  }
+}; 
+
+
+module.exports = { createService, deleteService, getAllServices, toggleServiceStatus ,updateApprovalStatus };
