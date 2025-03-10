@@ -453,6 +453,32 @@ const approveProductController = async (req, res) => {
 };
 
 
+const boostProduct = async (req, res) => {
+  try {
+    // Extract product ID and boost value from the request body
+    const { productId, boostAmount } = req.body;
+
+    // Find the product by ID
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Add the boostAmount to the current 'boosted' value
+    product.boosted += boostAmount;
+
+    // Save the updated product
+    await product.save();
+
+    // Respond with the updated product
+    res.status(200).json({ message: 'Product boosted successfully', product });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 
 // ========== EXPORT CONTROLLERS ================
 module.exports = {
@@ -467,4 +493,5 @@ module.exports = {
   productReviewController,
   deleteSpecificProductImageController,
   approveProductController,
+   boostProduct,
 };

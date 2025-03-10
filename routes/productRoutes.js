@@ -21,6 +21,8 @@ router.get("/:id", productController.getSingleProductController);
 // GET TOP PRODUCTS
 router.get("/list/top-products", productController.getTopProductsController);
 
+router.patch('/boost', productController.boostProduct);
+
 // DELETE PRODUCT
 router.delete(
   "/:id",

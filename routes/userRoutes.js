@@ -54,6 +54,8 @@ router.get("/logout", isAuth, userController.logoutController);
 // GET USER PROFILE
 router.get("/profile", isAuth, userController.getUserProfileController);
 
+router.put("/:userId/product-payments", userController.updateProductPayments);
+
 // UPDATE PROFILE
 router.put(
   "/profile",

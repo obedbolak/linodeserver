@@ -491,6 +491,62 @@ const deleteUserController = async (req, res) => {
 };
 
 
+const updateProductPayments = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { productPayments } = req.body;
+
+        // Validate the payment value
+        if (!productPayments) {
+            return res.status(400).json({
+                success: false,
+                message: "Product payment value is required"
+            });
+        }
+
+        // Check if value is in allowed range
+        if (![1, 2, 3, 4].includes(productPayments)) {
+            return res.status(400).json({
+                success: false,
+                message: "Product payment must be 1, 2, 3, or 4"
+            });
+        }
+
+        // Find and update the user
+        const updatedUser = await userModel.findByIdAndUpdate(
+            userId,
+            {
+                productPayments: productPayments
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Product payments updated successfully",
+            user: updatedUser
+        });
+
+    } catch (error) {
+        console.error('Error in updateProductPayments:', error);
+        res.status(500).json({
+            success: false,
+            message: "Error updating product payments",
+            error: error.message
+        });
+    }
+};
+
 
 
 module.exports = {
@@ -507,4 +563,5 @@ module.exports = {
   updateProfileController,
   logoutController,
   updateApprovalStatus,
+  updateProductPayments
 };

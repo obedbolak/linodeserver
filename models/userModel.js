@@ -70,6 +70,11 @@ const userSchema = new mongoose.Schema(
     businessAddress: { type: String },
     businessDescription: { type: String },
     businessPhone: { type: String },
+    productPayments: { 
+    type: Number, 
+    enum: [1, 2, 3, 4], 
+    default: 1 
+  }
 
   },
 

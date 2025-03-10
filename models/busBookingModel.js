@@ -9,6 +9,10 @@ const BookingSchema = new mongoose.Schema({
     type: String, 
     required: [true, 'Destination is required'] 
   },
+  selectedCity: {
+   type: String,
+   required: [true, 'city is required']
+  },
   selectedSeats: { 
     type: [Number], 
     required: [true, 'Selected seats are required'] 

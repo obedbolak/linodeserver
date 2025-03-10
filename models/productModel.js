@@ -69,6 +69,10 @@ isApproved: {
       type: Boolean,
       default: false,  // default to false if not explicitly set
     },
+     boosted: {
+      type: Number,
+      default: 0,
+    },
 
   },
  

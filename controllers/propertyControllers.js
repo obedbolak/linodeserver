@@ -84,4 +84,110 @@ const createProperty = async (req, res) => {
   }
 };
 
-module.exports = { createProperty };
+// Get all properties
+const getAllProperties = async (req, res) => {
+  try {
+    const properties = await Property.find();
+    res.status(200).send({
+      success: true,
+      propertiesCount: properties.length,
+      properties,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error fetching properties",
+      error: error.message,
+    });
+  }
+};
+
+// Delete property
+const deleteProperty = async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) {
+      return res.status(404).send({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    // Delete images from Cloudinary
+    for (let image of property.images) {
+      await cloudinary.uploader.destroy(image.public_id);
+    }
+
+    await Property.findByIdAndDelete(req.params.id);
+    res.status(200).send({
+      success: true,
+      message: "Property deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error deleting property",
+      error: error.message,
+    });
+  }
+};
+
+// Update property
+const updateProperty = async (req, res) => {
+  try {
+    let property = await Property.findById(req.params.id);
+    if (!property) {
+      return res.status(404).send({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    // Handle new images if uploaded
+    if (req.files && req.files.length > 0) {
+      // Delete old images from Cloudinary
+      for (let image of property.images) {
+        await cloudinary.uploader.destroy(image.public_id);
+      }
+
+      // Upload new images
+      const imagesArray = [];
+      for (let file of req.files) {
+        const fileUri = getDataUri(file);
+        const cdb = await cloudinary.uploader.upload(fileUri.content);
+        imagesArray.push({
+          public_id: cdb.public_id,
+          url: cdb.secure_url,
+        });
+      }
+      req.body.images = imagesArray;
+    }
+
+    property = await Property.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.status(200).send({
+      success: true,
+      message: "Property updated successfully",
+      property,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error updating property",
+      error: error.message,
+    });
+  }
+};
+
+
+
+module.exports = { 
+   createProperty,
+  getAllProperties,
+  deleteProperty,
+  updateProperty 
+ };
